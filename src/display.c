@@ -6,7 +6,8 @@ SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
 uint32_t* color_buffer = NULL;
 SDL_Texture * color_buffer_texture = NULL; 
-
+int window_height = 800;
+int window_width = 600;
 
 /*
  * This is the initialize function
@@ -59,17 +60,17 @@ bool initialize_window(void) {
 }
 
 void clear_color_buffer(uint32_t color) {
-	for (int y = 0; y < HEIGHT; y++) {
-		for(int x = 0; x < WIDTH; x++) {
-			color_buffer[(WIDTH * y) + x] = color;
+	for (int y = 0; y < window_height; y++) {
+		for(int x = 0; x < window_width; x++) {
+			color_buffer[(window_width * y) + x] = color;
 		}
 	}
 }
 void draw_grid(void) {
-	for (int y = 0; y < HEIGHT; y++) {
-		for(int x = 0; x < WIDTH; x++) {
+	for (int y = 0; y < window_height; y++) {
+		for(int x = 0; x < window_width; x++) {
 			// We need to check if width * y + x % 10
-			uint32_t val = (WIDTH * y) + x;
+			uint32_t val = (window_width * y) + x;
 			if (val % 10 == 0 || y % 10 == 0) {
 				color_buffer[val] =  0x000000FF;
 			} 
@@ -79,25 +80,25 @@ void draw_grid(void) {
 
 void draw_square(int x, int y, int height, int width, uint32_t color) {
 
-	// if ((y + height) > HEIGHT) {
-	// 	fprintf(stderr, "Square height is to large to draw\n");
-	// 	return;
-	// }
-	//
-	// if ((x + width) > WIDTH) {
-	// 	fprintf(stderr, "Square width is to large to draw\n");
-	// 	return;
-	// }
+	if (y > window_height) {
+		fprintf(stderr, "Square height is to large to draw\n");
+		return;
+	}
 
-	// Calculate y if y is 0 --> 800
-	// y is 50 800 - 50 = 750  50 downwards
-	// Cacluate x if x is 0 --> 800
-	// x is 100 800 - 100 700 --> 100 to the right
+	if (x > window_width) {
+		fprintf(stderr, "Square width is to large to draw\n");
+		return;
+	}
+
+	// We iterate on the specific row that y starts, width * y + x and begin
+	// to color
+	// if y == 5 and window_width == 100 then y == 500 and the x value 
+
 	for (int row = 0; row < width; row++) {
 		for(int col = 0; col < height; col++) {
 			int current_x = x + row;
 			int current_y = y + col;
-			color_buffer[(WIDTH * current_y) + current_x] =  color;
+			color_buffer[(window_width * current_y) + current_x] =  color;
 		}
 	}
 }
@@ -115,7 +116,7 @@ void render_color_buffer(void) {
 		color_buffer_texture,
 		NULL, 
 		color_buffer, 
-		WIDTH * (sizeof (uint32_t))
+		window_width * (sizeof (uint32_t))
 	);
 
 	SDL_RenderCopy(

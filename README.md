@@ -94,4 +94,67 @@ The Mesh we use to set up the window is called a Rastor, which is pretty great a
     - Basically Grids
     - Called in render function()
 
-2.  
+# Points and Vectors
+
+Now we add a Z coordinate!
+
+## 1: Vectors
+    - Vectors x,y,z
+    - Vectors: intuitively as arrows
+    - Direction is very important
+    - What is the magnitude of the vector (strength) and where is it pointing
+
+    1. Scalar Quantities
+        - Only a single number (scalar) 
+        - Examples: Temperature, Area, Length, Pressure
+
+    2. Vector Quantities
+        - Multiple parameters
+        - Velocity
+        - Acceleration
+        - Force
+        - List
+        - Drag
+        - Displacement
+
+    3. Why are these quantities about 3D?
+        - With 3D we have an x and a y and a z
+                        z
+                        |
+                        |
+                        |______ y
+                       /
+                      /
+                     /
+                    x
+        - Now there is three points 
+            - (3.0, 0.0, 3.0)
+        
+        - Computer Programmers with 3D objects, we call points as vectors
+        - x,y --> we can think of as a vector, meaning we can make a triangle 
+        - Vectors will determine points in the plane
+        - A Cube has vertices or we can think of a cube as a set of vectors
+        - A 2D vectors has 2 Components (6.0, 2.0)
+        - A 3D vectors has 3 Components (6.0, 2.0, 8.0)
+
+        - We need to make a struct for these
+
+        ```C
+        typedef struct {
+            float x;
+            float y;
+        } vec2_t;
+
+        // initialized with 
+        vec2_t p0 = { 0.0, 2.0 };
+        ``` 
+        - This vec2_t represends a 2D type
+
+        
+
+
+## 2: Matrices
+
+## 3: Trigonometry
+
+
