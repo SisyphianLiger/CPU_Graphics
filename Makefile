@@ -6,3 +6,5 @@ run:
 
 clean:
 	rm bin/renderer
+
+start: build run

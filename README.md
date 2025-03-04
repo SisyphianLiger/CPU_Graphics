@@ -85,3 +85,13 @@ Colorbuffer can also be referred to as a frame-buffer but are the same thing.
 
 ## Rastor 
 The Mesh we use to set up the window is called a Rastor, which is pretty great and yellow in our case :)
+
+# Excercise Time!!
+
+1. Create a function called draw_grid():
+    - renders a background grid that shows a line every row or column of pixels 
+    - Lines are multiples of 10
+    - Basically Grids
+    - Called in render function()
+
+2.  
