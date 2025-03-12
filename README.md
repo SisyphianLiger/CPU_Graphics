@@ -151,10 +151,220 @@ Now we add a Z coordinate!
         - This vec2_t represends a 2D type
 
         
+### Projection
+        - Having a 3D idea that gets projected on a 2d plane
+        - In Ortographic Projection we ignore the screen 
+#### Perspective Projection
+        - frustum, the idea of the view from a human pov on a 2d screen
+        - We now use the z length (depth) to move the items to in the back
+        - Projection Plane - The Screen
+        - Eye Point - Where we view it
+        - Point -> Frustum needs to maintain a new point from where the 
+        
+        - How Can we calculate x --> P to P1 of X
+        - Monitor is a top view of display 
+        - We can deduce the Px with P and Pz so now we need to fine P1
+        - We can solve p1 by using the same logic of the bigger triangle
 
+        - Similar Triangles: the triangles that are the same shap but scaled up/down
+        - Property is:
+                    BC   AB
+                    -- = --
+                    DE   AD
+        -        Px
+           P`x = --
+                 Pz
+
+        -        Py
+           P`y = --
+                 Pz
+    
+        - These two formulas are called Perspective Divide
+        - The Bigger the z the smaller the display
+
+
+### Coordinate System Handedness
+    - Z values get larger and lager the further away you look
+    - This is not neccesarily always the case, can be that z values increase towards the user
+    - Left Hand Coordinate system -> z values grow inside the monitor
+    - Right Hand Coordinate system -> z values grow outside the monitor
+    - OpenGL is a Right Handed Coodrinate System
+    - Understand the Handedness when implementing the system
+
+## Vector Transformations
+    - The Current Projection we have made are static
+    - WE NEED MOVEMENT!
+    - Linear Transformations: linear equatins, linear functions and their representations
+    - Scaling, Translate, Rotation
 
 ## 2: Matrices
+    - Rotation Matrices
+    - The way we manipulate objects 
+    - What does it look like?
+    _                       _
+    | cos alpha, -sin alpha |
+    | sin aplha, cos alpha  |
+    -                       _
 
+    - start with 2d vector (x,y)
+    - How can we increase a 2D vector by its angle
+        
 ## 3: Trigonometry
+    - Cos -->
+    - Sin --> 
+    - Tan -->
 
+                |\<--- Alpha
+                | \
+    adjacent--> |  \ <--- Hypotenuse
+                |   \
+                |____\
+                opposite
+
+            opposite              adjacent               opposite
+     sin =  ----------     cos = ----------        tan = --------- 
+            hypotenuse           hypotenuse              adjacent 
+
+    
+       pnemonic: s = o/h, c = a/h, t = o/a
+
+        We know:
+        x = r cos(alpha)
+        y = r sin(aplha)
+        AND VIA SUBSTITUTION
+        x' = r (cos(aplha + beta))
+        y' = r (sin(aplha + beta))
+
+        x' = r cos(alpha + beta) == x' = r(cos aplha cos beta - sin alpha sin beta)
+        x' = r (cos aplha cos beta) - r (sin alpha sin beta))
+                        |                       |
+                        We have a substitution here!
+        To find the new x we substitue the original x and original y * the beta of cos/sin
+        x' =  x * cos(beta) - y * sin(beta)
+
+
+        y' = r sin(alpha + beta)
+        y' = r * (sin alpha * cos beta + cos alpha * sin beta)
+                    |                           |
+                    We again has a substitution!!!
+        y' = (y * cos beta) + (x * sin beta)
+
+# IMPORTANT
+        TO GET THE ROTATION EFFECT, WE SIMPLY LOCK ONE AXIS, CAUSING THE ROTATION TO BE PERCEIEVED
+
+        x' =  x * cos(beta) - y * sin(beta)
+        y' = (y * cos beta) + (x * sin beta)
+
+
+# Lets Prove it!
+   
+        -  Let us start with the following:
+           P1: sin(alpha + beta) = sin(alpha) cos(beta) + cos(alpha) sin(beta)
+            
+        Hypotenuse = 1  (just for simplicity)
+        First Triangle is A, B C
+        Second Triangle is C, D, A
+
+        sin Alpa + Beta is the point from x to the top of the second triangle
+        or a triangle formed from A,F,D
+
+        What is the sin of the first and second?
+        
+        sin(alpha + Beta) = DE + EF 
+        
+        We can subsitute EF with CB
+        Now we can solve CB with the cos of 
+        
+          
+          
+
+
+        cos(alpha + beta) = cos(alpha) cos(beta) + sin(alpha) sin(beta)
+
+        
+
+## Delay and FPS
+
+```C
+    // How Many Milli seconds to slepp until to resume process
+    // time_to_wait take the Frame Target (30 FPS) - current ticks
+    int time_to_wait = FRAME_TARGET_TIME - (SDL_GetTicks() - previous_frame_time);
+
+    // If the time is too fast then we wait
+    if (time_to_wait > 0 && time_to_wait <= FRAME_TARGET_TIME) {
+            SDL_Delay(time_to_wait);
+    }
+```
+
+The naive implementation used a While loop...while fine the problem arises that from a memory perspective (OS), we will be using the entire process of the cpu, even though the main action is to sleep, i.e. delay so we have the correct FPS. The solution is seen above, instead we chose to use SDL_Delay(), a function that directly communicates with the OS, and does not hijack the entire Processing unit, meaning our OS doesn't feel like its such a heavy lift
+
+## Triangles and Meshes
+
+    - The Standford Bunny: A 3D Mesh, a collection of triangles arranged in a collection to create the impression of a solid object
+    
+    - A triangle is defined by three corner points (vertices)
+    
+    - Vertices is 1 or more vertex points
+
+    - Every Vertex has an X,Y,Z --> Creating a Triangle or Triangle Face
+    
+### Vertices
+    1. Each one of Vertex point has XYZ values
+    To represent this type of array we can use the following
+```C
+    /* Declare an array of vertices */
+    vec3_t cube_vertices[8] = {
+        { .x = -1, .y = -1, .z = -1 }, // 1
+        { .x = -1, .y =  1, .z = -1 }, // 2
+        { .x =  1, .y =  1, .z = -1 }, // 3
+        { .x =  1, .y = -1, .z = -1 }, // 4
+        { .x =  1, .y =  1, .z =  1 }, // 5
+        { .x =  1, .y = -1, .z =  1 }, // 6 
+        { .x = -1, .y =  1, .z =  1 }, // 7
+        { .x = -1, .y = -1, .z =  1 }, // 8
+    };
+```
+
+### Faces
+    - Vertices are great, but now we need to draw the face!
+    - Face is a collection of the 1st, 2nd, 3rd, vertex
+
+```C
+    /* Declare a new type of face information */
+    typedef struct {
+        int a, b, c;
+    } face_t;
+
+    /* Declare an array of cube triangle faces */
+    face_t cube_faces[12] = {
+        // Front 
+        { .a = 1, .b = 2, .c = 3 }, 
+        { .a = 1, .b = 3, .c = 4 }, 
+        // Right 
+        { .a = 4, .b = 3, .c = 5 }, 
+        { .a = 4, .b = 5, .c = 6 }, 
+        // Back
+        { .a = 6, .b = 5, .c = 7 }, 
+        { .a = 6, .b = 7, .c = 8 }, 
+        // left
+        { .a = 6, .b = 7, .c = 2 }, 
+        { .a = 6, .b = 2, .c = 1 }, 
+        // top
+        { .a = 2, .b = 7, .c = 5 }, 
+        { .a = 2, .b = 5, .c = 3 }, 
+        // bottom
+        { .a = 6, .b = 8, .c = 1 }, 
+        { .a = 6, .b = 1, .c = 4 }, 
+    }:
+```
+
+    - So Each vertex is a vec3 and each face is a index value of the vertexs
+        
+    1. Does the order of the vertexes matter?
+        - ORDER MATTERS
+        - Order can determine what is front and back
+    
+## Drawing Triangles
+    
+    - We have written Vertices woo hoo!
 

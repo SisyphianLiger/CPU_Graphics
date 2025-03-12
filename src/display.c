@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include "display.h"
 
 SDL_Window* window = NULL;
@@ -67,28 +68,20 @@ void clear_color_buffer(uint32_t color) {
 	}
 }
 void draw_grid(void) {
-	for (int y = 0; y < window_height; y++) {
-		for(int x = 0; x < window_width; x++) {
-			// We need to check if width * y + x % 10
-			uint32_t val = (window_width * y) + x;
-			if (val % 10 == 0 || y % 10 == 0) {
-				color_buffer[val] =  0x000000FF;
-			} 
-		}
-	}
+    for (int y = 0; y < window_height; y += 10) {
+        for (int x = 0; x < window_width; x += 10) {
+            color_buffer[(window_width * y) + x] = 0xFF444444;
+        }
+    }
 }
 
-void draw_square(int x, int y, int height, int width, uint32_t color) {
 
-	if (y > window_height) {
-		fprintf(stderr, "Square height is to large to draw\n");
-		return;
-	}
+void draw_pixel(int x, int y, uint32_t color) {
+	if (x >= 0 && x < window_width && y >= 0 && y < window_height) 
+		color_buffer[window_width * y + x] = color;
+}
 
-	if (x > window_width) {
-		fprintf(stderr, "Square width is to large to draw\n");
-		return;
-	}
+void draw_rect(int x, int y, int height, int width, uint32_t color) {
 
 	// We iterate on the specific row that y starts, width * y + x and begin
 	// to color
@@ -98,7 +91,7 @@ void draw_square(int x, int y, int height, int width, uint32_t color) {
 		for(int col = 0; col < height; col++) {
 			int current_x = x + row;
 			int current_y = y + col;
-			color_buffer[(window_width * current_y) + current_x] =  color;
+			draw_pixel(current_x, current_y, color);
 		}
 	}
 }

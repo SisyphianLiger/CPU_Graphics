@@ -1,7 +1,17 @@
+#include "SDL2/SDL_timer.h"
 #include "display.h"
+#include "triangle.h"
 #include "vector.h"
+#include "mesh.h"
+
+
+triangle_t triangles_to_render[N_MESH_FACES];
+vec3_t camera_position = { .x = 0.0, .y = 0.0, .z = -5.0 };
+vec3_t cube_rotation = {.x = 0.0, .y = 0.0, .z = 0.0 };
+float fov_factor = 640.0;
 
 bool is_running = false;
+int previous_frame_time = 0;
 
 void setup(void) {
 	color_buffer = (uint32_t*) malloc(sizeof(uint32_t) * window_width * window_height);
@@ -25,6 +35,8 @@ void setup(void) {
 		window_width,
 		window_height
 	);
+
+
 }
 
 
@@ -48,19 +60,93 @@ void process_input(void) {
 	}
 }
 
+/**
+ * We do Orthographic
+ */ 
+vec2_t project(vec3_t point) {
+	vec2_t projected_pnt = {
+		.x = (fov_factor * point.x) / point.z,
+		.y = (fov_factor * point.y) / point.z,
+	};
+
+	return projected_pnt;
+}
+
 void update(void) {
-	// TODO:
+	
+	// Time Buffer to enforce 30 FPS
+	
+	// How Many Milli seconds to slepp until to resume process
+	// time_to_wait take the Frame Target (30 FPS) - current ticks
+	int time_to_wait = FRAME_TARGET_TIME - (SDL_GetTicks() - previous_frame_time);
+	
+	// If the time is too fast then we wait
+	if (time_to_wait > 0 && time_to_wait <= FRAME_TARGET_TIME) {
+		SDL_Delay(time_to_wait);
+	}
+
+	
+	// How many milliseconds have pased
+	previous_frame_time = SDL_GetTicks();
+
+
+	cube_rotation.x += 0.01;
+	cube_rotation.y += 0.01;
+	cube_rotation.z += 0.01;
+
+	// Loops Over all triangle Faces of Cube Mesh
+	for (int i = 0; i < N_MESH_FACES; i++) {
+		face_t mesh_face = mesh_faces[i];
+		vec3_t face_vertices[3]; 
+
+
+		face_vertices[0] = mesh_vertices[mesh_face.a - 1];
+		face_vertices[1] = mesh_vertices[mesh_face.b - 1];
+		face_vertices[2] = mesh_vertices[mesh_face.c - 1];
+		
+		triangle_t projected_triangle;
+		for (int j = 0; j < 3; j++) {
+			vec3_t transform_vertex = face_vertices[j];
+			transform_vertex = vec3_rotate_y(transform_vertex, cube_rotation.x);
+			transform_vertex = vec3_rotate_x(transform_vertex, cube_rotation.y);
+			transform_vertex = vec3_rotate_z(transform_vertex, cube_rotation.z);
+
+			// Translate the vertex away from camera
+			transform_vertex.z -= camera_position.z;
+			
+
+			// Project it into the current vertex plane
+			vec2_t projected_point = project(transform_vertex);
+
+			// Scale and project points to middle of screen
+			projected_point.x += (window_width / 2);
+			projected_point.y += (window_height / 2);
+
+			projected_triangle.points[j] = projected_point;
+		
+		}
+		// Saving new projected triangle to array of triangles to render
+		triangles_to_render[i] = projected_triangle;
+		
+	
+	}
+
 }
 
 
 void render(void) {
-	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-	SDL_RenderClear(renderer);
 	
-	// Draw here
 	draw_grid();
-	draw_square(50, 50, 100, 100, 0x0000FFFF);
 
+
+	for (int i = 0; i < N_MESH_FACES; i++) {
+		triangle_t triangle = triangles_to_render[i];
+
+		// Draw the 3 vertices
+		draw_rect(triangle.points[0].x, triangle.points[0].y, 3, 3, 0xFFFFFF00);
+		draw_rect(triangle.points[1].x, triangle.points[1].y, 3, 3, 0xFFFFFF00);
+		draw_rect(triangle.points[2].x, triangle.points[2].y, 3, 3, 0xFFFFFF00);
+	}
 	// Render here
 	render_color_buffer();
 
@@ -78,8 +164,7 @@ int main(void) {
 
 	setup();	
 
-	vec3_t myvec = { 2.0, 3.0, -4.0};
-
+	// how can we waste time
 	while(is_running) {
 		process_input();
 		update();
