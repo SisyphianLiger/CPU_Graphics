@@ -1,0 +1,32 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-Wall",
+      "-std=c99",
+      "-I/opt/homebrew/include",
+      "-o",
+      "bin/renderer",
+      "./src/main.c"
+    ],
+    "directory": "/Users/ryanmac/Desktop/08.C_Projects/02_Graphics",
+    "file": "/Users/ryanmac/Desktop/08.C_Projects/02_Graphics/src/main.c",
+    "output": "/Users/ryanmac/Desktop/08.C_Projects/02_Graphics/bin/renderer"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-Wall",
+      "-std=c99",
+      "-I/opt/homebrew/include",
+      "-o",
+      "bin/renderer",
+      "./src/mesh.c"
+    ],
+    "directory": "/Users/ryanmac/Desktop/08.C_Projects/02_Graphics",
+    "file": "/Users/ryanmac/Desktop/08.C_Projects/02_Graphics/src/mesh.c",
+    "output": "/Users/ryanmac/Desktop/08.C_Projects/02_Graphics/bin/renderer"
+  }
+]

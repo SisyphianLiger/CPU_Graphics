@@ -139,22 +139,13 @@ void render(void) {
 	draw_grid();
 
 
-	// PINK #FFC0CB
-
 	for (int i = 0; i < N_MESH_FACES; i++) {
 		triangle_t triangle = triangles_to_render[i];
 
 		// Draw the 3 vertices
-		draw_rect(triangle.points[0].x, triangle.points[0].y, 1, 1, 0xFFFFC0CB);
-		draw_rect(triangle.points[1].x, triangle.points[1].y, 1, 1, 0xFFFFC0CB);
-		draw_rect(triangle.points[2].x, triangle.points[2].y, 1, 1, 0xFFFFC0CB);
-		draw_line(triangle.points[0].x, triangle.points[0].y, triangle.points[1].x, triangle.points[1].y, 0xFFFFC0CB);
-		draw_line(triangle.points[1].x, triangle.points[1].y, triangle.points[2].x, triangle.points[2].y, 0xFFFFC0CB);
-		draw_line(triangle.points[0].x, triangle.points[0].y, triangle.points[2].x, triangle.points[2].y, 0xFFFFC0CB);
-
-		draw_bres_line(triangle.points[0].x, triangle.points[0].y, triangle.points[1].x, triangle.points[1].y, 0xFFFFC0CB);
-		draw_bres_line(triangle.points[1].x, triangle.points[1].y, triangle.points[2].x, triangle.points[2].y, 0xFFFFC0CB);
-		draw_bres_line(triangle.points[0].x, triangle.points[0].y, triangle.points[2].x, triangle.points[2].y, 0xFFFFC0CB);
+		draw_rect(triangle.points[0].x, triangle.points[0].y, 3, 3, 0xFFFFFF00);
+		draw_rect(triangle.points[1].x, triangle.points[1].y, 3, 3, 0xFFFFFF00);
+		draw_rect(triangle.points[2].x, triangle.points[2].y, 3, 3, 0xFFFFFF00);
 	}
 	// Render here
 	render_color_buffer();
