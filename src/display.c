@@ -134,6 +134,8 @@ void destroy(void) {
 	SDL_Quit();
 }
 
+
+
 /*
  * Take the Delta x and y and increment
  * It takes side length (the longest side) to produce the ratio needed to increment
@@ -228,4 +230,11 @@ void draw_bres_line(int x0, int y0, int x1, int y1, uint32_t color){
 	else 
 		draw_vertical_line(x0,  y0, x1, y1, color);
 	
+}
+
+
+void draw_triangle(int x0, int y0,int x1, int y1,int x2, int y2, uint32_t  color) {
+	draw_bres_line(x0, y0, x1,  y1, color);
+	draw_bres_line(x1, y1, x2,  y2, color);
+	draw_bres_line(x2, y2, x0,  y0, color);
 }
