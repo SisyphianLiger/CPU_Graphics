@@ -367,4 +367,6 @@ The naive implementation used a While loop...while fine the problem arises that 
 ## Drawing Triangles
     
     - We have written Vertices woo hoo!
+    - gonna watch though to see how he does it
+
 
