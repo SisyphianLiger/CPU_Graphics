@@ -1,8 +1,7 @@
 # Dependencies
 ## SDL
     - We need to draw Pixels
-    - SDL allows us to open a display at particular color
-    - Simple Task but modern computers with OS are not that simple
+    - SDL allows us to open a display at particular color Simple Task but modern computers with OS are not that simple
     - We use SDL to avoid how the OS's api's work 
 
 
@@ -367,4 +366,128 @@ The naive implementation used a While loop...while fine the problem arises that 
 ## Drawing Triangles
     
     - We have written Vertices woo hoo!
+    - We need to draw out edges!
+    - How can we connect the dots
+    PROBLEM: Rest to Rising Lines?
+        - We now need to draw lines from the vertices, which makes sense
+    
+## What is a Line
+    
+    1. A Line is a set of points 
+    2. f(x) = y = mx + c
+        - y = y coordinate or height
+        - m = number multiplying x (slope)
+        - x = x coordinate or length
+        - c = y intercept value or where intercepts
 
+        - We calculate the m with the delta Y / delta X
+        - Slope is a ratio
+        - Slope is the tangent of the slope lol
+
+        - Slope sign?
+            - Delta Y > Delta X --> steep Curve and M is big or > 1
+            - Opposite is a inverse
+
+## Rasterizing Lines (DDA)
+    
+    1. We need to approximate lines
+    2. So we know that a line is an infinite series of numbers of point x,y
+    3. We need a Raster
+        Raster: a finite set of pixels (net of cells to paint correct pixels)
+    4. If we cannot find a perfect line, we need to find an approximation
+   
+### Two Big Algos
+    1. DDA: Digital Differential Analyzer
+        - Very Popular but has flaws
+        - Slower but easier to understand and reason
+        - We Start here
+        - Explanation: Given two points, we need to find the approximate integer value to paint the pixel
+        - We start from the left 
+
+        - With equation of slope I round up or down and move value of x by slope
+
+        - OK so pretty simple, for loop with slope, where we take the value of the point and make sure
+            : we round up and round down
+        - The reason this is slow is because of floating point values that divide
+        - Division is a hindrance for computers
+
+    2. Bresenham: 
+        - If the line drawing becomes slow then implement bresenham
+        - Why is this faster?
+        - Additions and Subtractions.
+
+## Bresenham's Algorithm
+### Intuition of Bresenham
+    - Work at Pixel Level instead of lines, no fractions just pixels
+    - Move from start pixel --> finish pixel and color them along the ways
+    - No wholes or rounding errors
+
+Lets look at out Raster
+```pre
+
++---+---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   | o |
++---+---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+---+
+|   |   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+---+
+| o |   |   |   |   |   |   |   |
++---+---+---+---+---+---+---+---+
+```
+
+We start at the bottom, and imagine a line crossing into the boxes:
+
+    What we need:
+
+        Delta X: x2 - x1 
+        Delta Y: y2 - y1
+
+*In this example Delta x > Delta y*
+
+Now we have the slope with Delta Y/ Delta X
+
+Now the Algorthim 
+
+Becase X > Y we will go from X to end and there is only 1 Y pixel per x coordinate
+
+```C
+var error = 0.5; // Better math for dealing with pixels
+while (x < x2) {
+    draw_pixel(x,y);
+    move x right
+    // Y here needs to accumulate error 
+    error += slope
+    if (error >= halfpixel) {
+        move y up
+        update error (-1);
+
+    }
+}
+```
+How much is Y off form where it should be?
+
+Ok but what is x is negative??
+
+If we invert Delta x then we keep the polarity of the slope and move left...
+
+
+```C
+float error = 0.5; // Better math for dealing with pixels
+float delta_X;
+float delta_y;
+// Solve the step based on the deltas
+
+
+while (x < x2) {
+    draw_pixel(x,y);
+    move x stepx
+    // Y here needs to accumulate error 
+    error += slope
+    if (error >= halfpixel) {
+        move y stepy
+        error-=1;
+
+    }
+}
+```
