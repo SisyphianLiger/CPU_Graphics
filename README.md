@@ -1,31 +1,35 @@
 # Dependencies
+
 ## SDL
+
     - We need to draw Pixels
     - SDL allows us to open a display at particular color Simple Task but modern computers with OS are not that simple
-    - We use SDL to avoid how the OS's api's work 
-
+    - We use SDL to avoid how the OS's api's work
 
 ## Idea
+
                 C
-                |   
+                |
                SDL
              /  |  \
           Mac Linux Windows
 
 ## Compiler for MacOS
+
     1. Insall with brew
-    - sdl2 
+    - sdl2
 
 ## Concept of a GameLoop
+
     - Having Frames being displayed
 
 ```javascript
-        setup()
-        while (TRUE){
-            process_input();
-            update();
-            render();
-        }
+setup();
+while (TRUE) {
+  process_input();
+  update();
+  render();
+}
 ```
 
     - For each frame we process input
@@ -33,6 +37,7 @@
     - Then we render the function (draw the window)
 
 ## Color Buffer -> Pixel Buffer
+
     - When we look at a screen, we have a an array of 3 colors
     - RGB or combinations of them
     - We allocate a space in memory that is a series of numbers
@@ -40,7 +45,7 @@
         [ [R,G,B],[R,G,B],[R,G,B],[R,G,B],[R,G,B] ]
         [ [R,G,B],[R,G,B],[R,G,B],[R,G,B],[R,G,B] ]
         [ [R,G,B],[R,G,B],[R,G,B],[R,G,B],[R,G,B] ]
-    
+
     - 0xFFFF0000 <-- How do we know this is Red?
           A  R  G  B
     - 0x  FF FF 00 00
@@ -52,10 +57,12 @@
     Range 00 --> FF (0 -> 256)
 
 ### Fixed-Size Types
+
     - Representing Colors needs a fixed set of bits
     - uint8_t for example
 
 ### ColorBuffor DS
+
     - uint32_t* color_buffer <-- So we can have a uint32_t ptr
     - ptr to address in memory where every element there is a element that is 32 bits
     - Width x Height == How many elements I need to allocate in memory
@@ -65,7 +72,7 @@
     uint32_t* color_buffer = NULL;
 
     void setup(void)	{
-        // Allocate teh required bytes in memory for color buffer 
+        // Allocate teh required bytes in memory for color buffer
         color_buffer = (uint32_t*) malloc(sizeof(uint32_t) * window_width * window_height);
         // Set the array with pixels
         color_buffer[0] = 0xFFFF0000;
@@ -77,34 +84,35 @@
 
 ```
 
-*** Note ***
+**_ Note _**
 
 Colorbuffer can also be referred to as a frame-buffer but are the same thing.
 
+## Rastor
 
-## Rastor 
 The Mesh we use to set up the window is called a Rastor, which is pretty great and yellow in our case :)
 
 # Excercise Time!!
 
 1. Create a function called draw_grid():
-    - renders a background grid that shows a line every row or column of pixels 
-    - Lines are multiples of 10
-    - Basically Grids
-    - Called in render function()
+   - renders a background grid that shows a line every row or column of pixels
+   - Lines are multiples of 10
+   - Basically Grids
+   - Called in render function()
 
 # Points and Vectors
 
 Now we add a Z coordinate!
 
 ## 1: Vectors
+
     - Vectors x,y,z
     - Vectors: intuitively as arrows
     - Direction is very important
     - What is the magnitude of the vector (strength) and where is it pointing
 
     1. Scalar Quantities
-        - Only a single number (scalar) 
+        - Only a single number (scalar)
         - Examples: Temperature, Area, Length, Pressure
 
     2. Vector Quantities
@@ -126,11 +134,11 @@ Now we add a Z coordinate!
                       /
                      /
                     x
-        - Now there is three points 
+        - Now there is three points
             - (3.0, 0.0, 3.0)
-        
+
         - Computer Programmers with 3D objects, we call points as vectors
-        - x,y --> we can think of as a vector, meaning we can make a triangle 
+        - x,y --> we can think of as a vector, meaning we can make a triangle
         - Vectors will determine points in the plane
         - A Cube has vertices or we can think of a cube as a set of vectors
         - A 2D vectors has 2 Components (6.0, 2.0)
@@ -144,24 +152,28 @@ Now we add a Z coordinate!
             float y;
         } vec2_t;
 
-        // initialized with 
+        // initialized with
         vec2_t p0 = { 0.0, 2.0 };
-        ``` 
+        ```
         - This vec2_t represends a 2D type
 
-        
+
+
 ### Projection
+
         - Having a 3D idea that gets projected on a 2d plane
-        - In Ortographic Projection we ignore the screen 
+        - In Ortographic Projection we ignore the screen
+
 #### Perspective Projection
+
         - frustum, the idea of the view from a human pov on a 2d screen
         - We now use the z length (depth) to move the items to in the back
         - Projection Plane - The Screen
         - Eye Point - Where we view it
-        - Point -> Frustum needs to maintain a new point from where the 
-        
+        - Point -> Frustum needs to maintain a new point from where the
+
         - How Can we calculate x --> P to P1 of X
-        - Monitor is a top view of display 
+        - Monitor is a top view of display
         - We can deduce the Px with P and Pz so now we need to fine P1
         - We can solve p1 by using the same logic of the bigger triangle
 
@@ -177,12 +189,12 @@ Now we add a Z coordinate!
         -        Py
            P`y = --
                  Pz
-    
+
         - These two formulas are called Perspective Divide
         - The Bigger the z the smaller the display
 
-
 ### Coordinate System Handedness
+
     - Z values get larger and lager the further away you look
     - This is not neccesarily always the case, can be that z values increase towards the user
     - Left Hand Coordinate system -> z values grow inside the monitor
@@ -191,14 +203,16 @@ Now we add a Z coordinate!
     - Understand the Handedness when implementing the system
 
 ## Vector Transformations
+
     - The Current Projection we have made are static
     - WE NEED MOVEMENT!
     - Linear Transformations: linear equatins, linear functions and their representations
     - Scaling, Translate, Rotation
 
 ## 2: Matrices
+
     - Rotation Matrices
-    - The way we manipulate objects 
+    - The way we manipulate objects
     - What does it look like?
     _                       _
     | cos alpha, -sin alpha |
@@ -207,10 +221,12 @@ Now we add a Z coordinate!
 
     - start with 2d vector (x,y)
     - How can we increase a 2D vector by its angle
-        
+
+
 ## 3: Trigonometry
+
     - Cos -->
-    - Sin --> 
+    - Sin -->
     - Tan -->
 
                 |\<--- Alpha
@@ -221,10 +237,10 @@ Now we add a Z coordinate!
                 opposite
 
             opposite              adjacent               opposite
-     sin =  ----------     cos = ----------        tan = --------- 
-            hypotenuse           hypotenuse              adjacent 
+     sin =  ----------     cos = ----------        tan = ---------
+            hypotenuse           hypotenuse              adjacent
 
-    
+
        pnemonic: s = o/h, c = a/h, t = o/a
 
         We know:
@@ -249,17 +265,17 @@ Now we add a Z coordinate!
         y' = (y * cos beta) + (x * sin beta)
 
 # IMPORTANT
+
         TO GET THE ROTATION EFFECT, WE SIMPLY LOCK ONE AXIS, CAUSING THE ROTATION TO BE PERCEIEVED
 
         x' =  x * cos(beta) - y * sin(beta)
         y' = (y * cos beta) + (x * sin beta)
 
-
 # Lets Prove it!
-   
+
         -  Let us start with the following:
            P1: sin(alpha + beta) = sin(alpha) cos(beta) + cos(alpha) sin(beta)
-            
+
         Hypotenuse = 1  (just for simplicity)
         First Triangle is A, B C
         Second Triangle is C, D, A
@@ -268,19 +284,19 @@ Now we add a Z coordinate!
         or a triangle formed from A,F,D
 
         What is the sin of the first and second?
-        
-        sin(alpha + Beta) = DE + EF 
-        
+
+        sin(alpha + Beta) = DE + EF
+
         We can subsitute EF with CB
-        Now we can solve CB with the cos of 
-        
-          
-          
+        Now we can solve CB with the cos of
+
+
+
 
 
         cos(alpha + beta) = cos(alpha) cos(beta) + sin(alpha) sin(beta)
 
-        
+
 
 ## Delay and FPS
 
@@ -300,16 +316,18 @@ The naive implementation used a While loop...while fine the problem arises that 
 ## Triangles and Meshes
 
     - The Standford Bunny: A 3D Mesh, a collection of triangles arranged in a collection to create the impression of a solid object
-    
+
     - A triangle is defined by three corner points (vertices)
-    
+
     - Vertices is 1 or more vertex points
 
     - Every Vertex has an X,Y,Z --> Creating a Triangle or Triangle Face
-    
+
 ### Vertices
+
     1. Each one of Vertex point has XYZ values
     To represent this type of array we can use the following
+
 ```C
     /* Declare an array of vertices */
     vec3_t cube_vertices[8] = {
@@ -318,13 +336,14 @@ The naive implementation used a While loop...while fine the problem arises that 
         { .x =  1, .y =  1, .z = -1 }, // 3
         { .x =  1, .y = -1, .z = -1 }, // 4
         { .x =  1, .y =  1, .z =  1 }, // 5
-        { .x =  1, .y = -1, .z =  1 }, // 6 
+        { .x =  1, .y = -1, .z =  1 }, // 6
         { .x = -1, .y =  1, .z =  1 }, // 7
         { .x = -1, .y = -1, .z =  1 }, // 8
     };
 ```
 
 ### Faces
+
     - Vertices are great, but now we need to draw the face!
     - Face is a collection of the 1st, 2nd, 3rd, vertex
 
@@ -336,44 +355,44 @@ The naive implementation used a While loop...while fine the problem arises that 
 
     /* Declare an array of cube triangle faces */
     face_t cube_faces[12] = {
-        // Front 
-        { .a = 1, .b = 2, .c = 3 }, 
-        { .a = 1, .b = 3, .c = 4 }, 
-        // Right 
-        { .a = 4, .b = 3, .c = 5 }, 
-        { .a = 4, .b = 5, .c = 6 }, 
+        // Front
+        { .a = 1, .b = 2, .c = 3 },
+        { .a = 1, .b = 3, .c = 4 },
+        // Right
+        { .a = 4, .b = 3, .c = 5 },
+        { .a = 4, .b = 5, .c = 6 },
         // Back
-        { .a = 6, .b = 5, .c = 7 }, 
-        { .a = 6, .b = 7, .c = 8 }, 
+        { .a = 6, .b = 5, .c = 7 },
+        { .a = 6, .b = 7, .c = 8 },
         // left
-        { .a = 6, .b = 7, .c = 2 }, 
-        { .a = 6, .b = 2, .c = 1 }, 
+        { .a = 6, .b = 7, .c = 2 },
+        { .a = 6, .b = 2, .c = 1 },
         // top
-        { .a = 2, .b = 7, .c = 5 }, 
-        { .a = 2, .b = 5, .c = 3 }, 
+        { .a = 2, .b = 7, .c = 5 },
+        { .a = 2, .b = 5, .c = 3 },
         // bottom
-        { .a = 6, .b = 8, .c = 1 }, 
-        { .a = 6, .b = 1, .c = 4 }, 
+        { .a = 6, .b = 8, .c = 1 },
+        { .a = 6, .b = 1, .c = 4 },
     }:
 ```
 
     - So Each vertex is a vec3 and each face is a index value of the vertexs
-        
+
     1. Does the order of the vertexes matter?
         - ORDER MATTERS
         - Order can determine what is front and back
-    
+
 ## Drawing Triangles
-    
+
     - We have written Vertices woo hoo!
     - We need to draw out edges!
     - How can we connect the dots
     PROBLEM: Rest to Rising Lines?
         - We now need to draw lines from the vertices, which makes sense
-    
+
 ## What is a Line
-    
-    1. A Line is a set of points 
+
+    1. A Line is a set of points
     2. f(x) = y = mx + c
         - y = y coordinate or height
         - m = number multiplying x (slope)
@@ -388,20 +407,21 @@ The naive implementation used a While loop...while fine the problem arises that 
             - Opposite is a inverse
 
 ## Rasterizing Lines (DDA)
-    
+
     1. We need to approximate lines
     2. So we know that a line is an infinite series of numbers of point x,y
     3. We need a Raster
         Raster: a finite set of pixels (net of cells to paint correct pixels)
     4. If we cannot find a perfect line, we need to find an approximation
-   
+
 ### Two Big Algos
+
     1. DDA: Digital Differential Analyzer
         - Very Popular but has flaws
         - Slower but easier to understand and reason
         - We Start here
         - Explanation: Given two points, we need to find the approximate integer value to paint the pixel
-        - We start from the left 
+        - We start from the left
 
         - With equation of slope I round up or down and move value of x by slope
 
@@ -410,18 +430,21 @@ The naive implementation used a While loop...while fine the problem arises that 
         - The reason this is slow is because of floating point values that divide
         - Division is a hindrance for computers
 
-    2. Bresenham: 
+    2. Bresenham:
         - If the line drawing becomes slow then implement bresenham
         - Why is this faster?
         - Additions and Subtractions.
 
 ## Bresenham's Algorithm
+
 ### Intuition of Bresenham
+
     - Work at Pixel Level instead of lines, no fractions just pixels
     - Move from start pixel --> finish pixel and color them along the ways
     - No wholes or rounding errors
 
 Lets look at out Raster
+
 ```pre
 
 +---+---+---+---+---+---+---+---+
@@ -439,14 +462,14 @@ We start at the bottom, and imagine a line crossing into the boxes:
 
     What we need:
 
-        Delta X: x2 - x1 
+        Delta X: x2 - x1
         Delta Y: y2 - y1
 
-*In this example Delta x > Delta y*
+_In this example Delta x > Delta y_
 
 Now we have the slope with Delta Y/ Delta X
 
-Now the Algorthim 
+Now the Algorthim
 
 Becase X > Y we will go from X to end and there is only 1 Y pixel per x coordinate
 
@@ -455,7 +478,7 @@ var error = 0.5; // Better math for dealing with pixels
 while (x < x2) {
     draw_pixel(x,y);
     move x right
-    // Y here needs to accumulate error 
+    // Y here needs to accumulate error
     error += slope
     if (error >= halfpixel) {
         move y up
@@ -464,12 +487,12 @@ while (x < x2) {
     }
 }
 ```
+
 How much is Y off form where it should be?
 
 Ok but what is x is negative??
 
 If we invert Delta x then we keep the polarity of the slope and move left...
-
 
 ```C
 float error = 0.5; // Better math for dealing with pixels
@@ -481,7 +504,7 @@ float delta_y;
 while (x < x2) {
     draw_pixel(x,y);
     move x stepx
-    // Y here needs to accumulate error 
+    // Y here needs to accumulate error
     error += slope
     if (error >= halfpixel) {
         move y stepy
@@ -490,3 +513,39 @@ while (x < x2) {
     }
 }
 ```
+
+## Dynamic Arrays
+
+    - Why Dynamic Arrays?
+    - The cube was nice but lets say we want to expand out 3D model to other things...say Ocaml my Camls. We are going to need to arrange our vertices and meshes a tad bit different then.
+
+### Why seperate vertices and faces in different arrays
+
+    - If we think of a nomral 3D mesh, well the problem with that is that a vertices can be shared with different triangles to keeping them seperate allows for a set that is unique to the triangle on display
+
+# Object Files
+
+    - The nature of most 3D models share vertices
+    - Lets open a 3D model editor -->
+
+## Exercise
+
+    - Obj file
+    - f -> faces
+    - v -> vertices
+    - In Main: inside setup load data from an obj file and upload them to our dynamic array
+    - load_obj_file_data(char * filename);
+        reads contents of .obj file
+        loads them to vertices and faces of mesh.vertices and mesh.faces
+        for vertices we take all the values x,y,z
+        for faces we only take the first values
+    -
+
+# Backface Culling
+
+    - Showing the faces that point to the camera
+    -
+
+# Face Normals
+
+    - A vector that determines the face of the surface
